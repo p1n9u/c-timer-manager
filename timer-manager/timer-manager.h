@@ -34,6 +34,7 @@ public:
 	 */
     int init_tmgr();
     void free_tmgr();
+    void refresh_timeseed(time_t *t_seed, time_t *seconds);
     void refresh_localtime(time_t *t_seed, struct tm* t);
     void print_time(struct tm* t);
     void save_te(time_element *te, struct tm* t);

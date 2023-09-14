@@ -70,6 +70,11 @@ void CTIMERManager::free_tmgr()
     free(pre_t);
 }
 
+void CTIMERManager::refresh_timeseed(time_t *t_seed, time_t *seconds)
+{
+    *t_seed = time(seconds);
+}
+
 void CTIMERManager::refresh_localtime(time_t *t_seed, struct tm* t)
 {
     localtime_r(t_seed, t);

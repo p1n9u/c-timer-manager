@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 
     system("clear");
     while (true) {
-        timer_mgr.cur_time = time(NULL);
+        timer_mgr.refresh_timeseed(&(timer_mgr.cur_time), NULL);
         timer_mgr.refresh_localtime(&(timer_mgr.cur_time), timer_mgr.cur_t);
         timer_mgr.save_te(timer_mgr.cur_te, timer_mgr.cur_t);
 
