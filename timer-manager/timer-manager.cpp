@@ -28,6 +28,7 @@ CTIMERManager::~CTIMERManager()
 
 int CTIMERManager::init_tmgr()
 {
+    refresh_flag = 0;
     minute_change_flag = 0;
     hour_change_flag = 0;
     day_change_flag = 0;
@@ -56,6 +57,11 @@ int CTIMERManager::init_tmgr()
     if (pre_te == NULL)
         exit(0);
 
+    cur_te->day_of_week_string = (char *)malloc(sizeof(char) * 4);
+    pre_te->day_of_week_string = (char *)malloc(sizeof(char) * 4);
+    memset(cur_te->day_of_week_string, '\0', sizeof(char) * 4);
+    memset(pre_te->day_of_week_string, '\0', sizeof(char) * 4);
+
     this->save_te(cur_te, cur_t);
     this->save_te(pre_te, pre_t);
 
@@ -64,6 +70,8 @@ int CTIMERManager::init_tmgr()
 
 void CTIMERManager::free_tmgr()
 {	
+    free(cur_te->day_of_week_string);
+    free(pre_te->day_of_week_string);
     free(cur_te);
     free(pre_te);
     free(cur_t);
@@ -80,13 +88,46 @@ void CTIMERManager::refresh_localtime(time_t *t_seed, struct tm* t)
     localtime_r(t_seed, t);
 }
 
-void CTIMERManager::print_time(struct tm* t)
+void CTIMERManager::print_time(time_element *te)
 {
-    printf("%d-%02d-%02d %02d:%02d:%02d\n", 
-            1900+t->tm_year, t->tm_mon+1, t->tm_mday,
-            t->tm_hour, t->tm_min, t->tm_sec);
+    printf("%d-%02d-%02d %s %02d:%02d:%02d\n",
+            te->year, te->month, te->day, te->day_of_week_string,
+            te->hour, te->minute, te->second);
 }
 
+void CTIMERManager::convert_day_of_week(char *day_of_week_string, int day_of_week)
+{
+    switch (day_of_week) {
+    case 0:
+        strncpy(day_of_week_string, "SUN", 3);
+        break;
+    case 1:
+        strncpy(day_of_week_string, "MON", 3);
+        break;
+    case 2:
+        strncpy(day_of_week_string, "TUE", 3);
+        break;
+    case 3:
+        strncpy(day_of_week_string, "WED", 3);
+        break;
+    case 4:
+        strncpy(day_of_week_string, "THU", 3);
+        break;
+    case 5:
+        strncpy(day_of_week_string, "FRI", 3);
+        break;
+    case 6:
+        strncpy(day_of_week_string, "SAT", 3);
+        break;
+    }
+    return;
+}
+
+/**
+ *
+ *
+
+ */
 void CTIMERManager::save_te(time_element *te, struct tm* t)
 {
     te->year = 1900 + (t->tm_year);
@@ -95,18 +136,21 @@ void CTIMERManager::save_te(time_element *te, struct tm* t)
     te->hour = t->tm_hour;
     te->minute = t->tm_min;
     te->second = t->tm_sec;
+    te->day_of_week = t->tm_wday;
+    this->convert_day_of_week(te->day_of_week_string, t->tm_wday);
 }
 
 void CTIMERManager::print_te(time_element *te)
 {
     printf("====================================\n");
     printf("[te->member]\n");
-    printf("    year  : %d\n", te->year);
-    printf("    month : %d\n", te->month);
-    printf("    day   : %d\n", te->day);
-    printf("    hour  : %d\n", te->hour);
-    printf("    min   : %d\n", te->minute);
-    printf("    sec   : %d\n", te->second);
+    printf("    year  : %4d\n", te->year);
+    printf("    month : %02d\n", te->month);
+    printf("    day   : %02d\n", te->day);
+    printf("    hour  : %02d\n", te->hour);
+    printf("    min   : %02d\n", te->minute);
+    printf("    sec   : %02d\n", te->second);
+    printf("    dow   : %s\n", te->day_of_week_string);
     printf("====================================\n");
 }
 

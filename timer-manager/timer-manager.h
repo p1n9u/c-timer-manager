@@ -15,6 +15,8 @@ typedef struct time_element {
     int hour;
     int minute;
     int second;
+    int day_of_week;
+    char *day_of_week_string;
 } time_element;
 
 class CTIMERManager {	
@@ -36,7 +38,7 @@ public:
     void free_tmgr();
     void refresh_timeseed(time_t *t_seed, time_t *seconds);
     void refresh_localtime(time_t *t_seed, struct tm* t);
-    void print_time(struct tm* t);
+    void print_time(time_element *te);
     void save_te(time_element *te, struct tm* t);
     void print_te(time_element *te);
     int compare_te_minute(time_element *cur_te, time_element *pre_te);
@@ -45,6 +47,7 @@ public:
     int compare_te_month(time_element *cur_te, time_element *pre_te);
     int compare_te_year(time_element *cur_te, time_element *pre_te);
     int check_by_interval(long base);
+    void convert_day_of_week(char *day_of_week_string, int day_of_week);
 
 protected:
 	/*
@@ -55,6 +58,7 @@ public:
 	/*
 	 * Member Attributes
 	 */
+    int refresh_flag;
     int minute_change_flag;
     int hour_change_flag;
     int day_change_flag;
